@@ -30,7 +30,28 @@ git clone https://github.com/MShields1986/docker_ros.git
 ```
 
 ## Usage
-`TODO`
+### Folder Structure
+The repository root directory contains two directories...
+- `docker` contains the template Dockerfiles and docker-compose files for the various setups
+- `src` is provided as a placeholder for the ROS packages and will be mounted as a volume inside the catkin_ws/src for some of the examples
+- `systemd` holds example systemd service files and a deploy script
+- `TODO: rosinstall file?`
+
+
+### Self-Contained Network - Docker *"bridge"* Network
+This example is taken from the ROS tutorials and provides a ROS master, publisher and subscriber each launched in a separate Docker container, launched from a single docker compose file.
+
+Navigate to the Docker compose files...
+```bash
+cd docker_ros/docker
+```
+
+Create the Docker network and launch the containers...
+```bash
+docker compose -f docker-compose-network-self-contained.yml up --remove-orphans
+```
+
+
 
 ## Bugs, Issues and Feature Requests
 Please report bugs, issues and request features using the [Issue Tracker](https://github.com/MShields1986/docker_ros/issues).
