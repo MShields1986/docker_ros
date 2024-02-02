@@ -5,8 +5,26 @@ Repository with a boilerplate layout for using ROS with Docker, including exampl
 `TODO`
 
 ## Installation
-`TODO`
+### Install and Setup Docker
+Follow the [Docker install guide](https://docs.docker.com/engine/install/ubuntu/).
 
+Allow permission for Docker to run without the sudo command being issued.
+```bash
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
+Confirm your setup.
+```bash
+docker run hello-world
+```
+
+Or trial Ubuntu 20.04 focal in an interactive session.
+```bash
+docker run -it --name ubuntu_test ubuntu:focal
+```
+
+### Clone this Repository
 ```bash
 git clone https://github.com/MShields1986/docker_ros.git
 ```
