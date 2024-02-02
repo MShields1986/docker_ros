@@ -267,6 +267,15 @@ Again, take a look at the Docker compose file, which is using the same .env file
 cat docker-compose-network-host-no-master.yml
 ```
 
+### Using External Hardware
+`TODO`
+
+### Using GUIs
+`TODO`
+
+### Launching on Boot With systemd
+`TODO`
+
 ## Bugs, Issues and Feature Requests
 Please report bugs, issues and request features using the [Issue Tracker](https://github.com/MShields1986/docker_ros/issues).
 
