@@ -127,7 +127,7 @@ services:
     restart: always
 ```
 
-You can see we are starting a bridge network and three services, rosmaster, publisher and subscriber. Each service is created using the offical ROS Noetic base Docker image. We can specify dependencies between containers. Note that we set our ROS network environment varibales as detailed in the [ROS network setup guide](https://wiki.ros.org/ROS/NetworkSetup). Each service is spawned connected to a specified Docker network.
+You can see we are starting a bridge network and three services, **rosmaster**, **publisher** and **subscriber**. Each service is created using the offical ROS Noetic base Docker image. We can specify dependencies between containers. Note that we set our ROS network environment varibales as detailed in the [ROS network setup guide](https://wiki.ros.org/ROS/NetworkSetup). Each service is spawned connected to a specified Docker network.
 
 ### Exposed Network - Docker *"host"* Network
 Navigate to the Docker compose files...
