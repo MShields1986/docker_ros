@@ -1,0 +1,40 @@
+version: '2'
+
+networks:
+  ros_test_bridge_network:
+    driver: bridge
+
+services:
+  rosmaster:
+    image: ros:noetic-robot
+    environment:
+      - "ROS_HOSTNAME=rosmaster"
+    command: stdbuf -o L roscore
+    networks:
+      - ros_test_bridge_network
+    restart: always
+
+  talker:
+    image: ros:noetic-robot
+    depends_on:
+      - rosmaster
+    environment:
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+      - "ROS_HOSTNAME=talker"
+    command: stdbuf -o L rostopic pub /chatter std_msgs/String "Hello World!" -r 2
+    networks:
+      - ros_test_bridge_network
+    restart: always
+
+  listener:
+    image: ros:noetic-robot
+    depends_on:
+      - rosmaster
+      - talker
+    environment:
+      - "ROS_HOSTNAME=listener"
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+    command: stdbuf -o L rostopic echo /chatter
+    networks:
+      - ros_test_bridge_network
+    restart: always
