@@ -1,8 +1,9 @@
 # Docker for ROS
+## Overview
 Repository with a boilerplate layout for using ROS with Docker, including examples for various network setups and external hardware.
 
 ## Introduction
-`TODO`
+This README is a summation of the key notes I picked up from a few other sources specified below. It's primarily as a reminder for myself in future but may be of some use to others starting out with Docker and ROS.
 
 ## Installation
 ### Install and Setup Docker
@@ -134,7 +135,7 @@ Navigate to the Docker compose files...
 cd docker_ros/docker
 ```
 
-Create the Docker network and launch the containers...
+Launch the containers, having them connect to the Docker *"host"* network...
 ```bash
 docker compose -f docker-compose-network-host.yml up --remove-orphans
 ```
@@ -200,8 +201,71 @@ A big change here is that we are using an external .env file to specify our envi
 cat .env
 ```
 
+```
+CATKIN_WORKSPACE_DIR="/catkin_ws"
 
+ROS_MASTER_URI="http://localhost:11311"
+ROS_HOSTNAME="localhost"
+ROS_IP="172.31.1.10"
 
+ETC_HOSTNAME_1=""
+ETC_HOST_IP_1=""
+```
+
+### Exposed Network ROS Master Running on Host Sytem - Docker *"host"* Network
+Navigate to the Docker compose files...
+```bash
+cd docker_ros/docker
+```
+
+Launch the containers, having them connect to the Docker *"host"* network...
+```bash
+docker compose -f docker-compose-network-host-no-master.yml up --remove-orphans
+```
+
+Should yield the rather disappointing...
+```
+[+] Running 2/0
+ ✔ Container docker-publisher-1   Created                                                                                                                                                                0.0s 
+ ✔ Container docker-subscriber-1  Created                                                                                                                                                                0.0s 
+Attaching to publisher-1, subscriber-1
+publisher-1   | ERROR: Unable to communicate with master!
+subscriber-1  | ERROR: Unable to communicate with master!
+publisher-1 exited with code 1
+subscriber-1 exited with code 1
+publisher-1   | ERROR: Unable to communicate with master!
+subscriber-1  | ERROR: Unable to communicate with master!
+```
+
+You'll see that we have only launched two services here, we are missing a ROS master but as the network setup is the same as the previous example the intention here is to run a ROS master on the host machine prior to launch the Docker containers.
+
+Let's try that, open another terminal and run a ROS master...
+```bash
+roscore
+```
+
+Then back to the previous terminal and launch the containers...
+```bash
+docker compose -f docker-compose-network-host-no-master.yml up --remove-orphans
+```
+
+This time you ought to see...
+```
+[+] Running 2/0
+ ✔ Container docker-publisher-1   Created                                                                                                                                                                0.0s 
+ ✔ Container docker-subscriber-1  Created                                                                                                                                                                0.0s 
+Attaching to publisher-1, subscriber-1
+subscriber-1  | data: "Hello World!"
+subscriber-1  | ---
+subscriber-1  | data: "Hello World!"
+```
+
+In a third terminal you can interact with the ROS network as we did in the previous example, subscribing and publishing to and from the containers and host machine.
+
+Again, take a look at the Docker compose file, which is using the same .env file as before...
+```bash
+cat docker-compose-network-host-no-master.yml
+```
 
 ## Bugs, Issues and Feature Requests
 Please report bugs, issues and request features using the [Issue Tracker](https://github.com/MShields1986/docker_ros/issues).
