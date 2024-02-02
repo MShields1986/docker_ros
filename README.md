@@ -37,9 +37,8 @@ The repository root directory contains two directories...
 - `systemd` holds example systemd service files and a deploy script
 - `TODO: rosinstall file?`
 
-
 ### Self-Contained Network - Docker *"bridge"* Network
-This example is taken from the ROS tutorials and provides a ROS master, publisher and subscriber each launched in a separate Docker container, launched from a single docker compose file.
+This example is a slight modification of the [ROS Docker tutorials](https://wiki.ros.org/docker/Tutorials/Network) and provides a ROS master, publisher and subscriber each launched in a separate Docker container, launched from a single docker compose file.
 
 Navigate to the Docker compose files...
 ```bash
@@ -50,6 +49,157 @@ Create the Docker network and launch the containers...
 ```bash
 docker compose -f docker-compose-network-self-contained.yml up --remove-orphans
 ```
+
+You ought to see the "Hello World!" output from the subscriber-1 container.
+```
+[+] Running 3/0
+ ✔ Container docker-rosmaster-1   Created                                                                                                                                                                0.0s 
+ ✔ Container docker-publisher-1   Created                                                                                                                                                                0.0s 
+ ✔ Container docker-subscriber-1  Created                                                                                                                                                                0.0s 
+Attaching to publisher-1, rosmaster-1, subscriber-1
+publisher-1   | ERROR: Unable to communicate with master!
+publisher-1 exited with code 0
+subscriber-1  | data: "Hello World!"
+subscriber-1  | ---
+subscriber-1  | data: "Hello World!"
+subscriber-1  | ---
+subscriber-1  | data: "Hello World!"
+```
+
+If you open another terminal and run some basic commands looking for a ROS master...
+```bash
+rostopic list
+```
+
+...you should be met with...
+```
+ERROR: Unable to communicate with master!
+```
+
+This is because we don't have a link between out host system's network and the Docker network we've created in this example.
+
+If we take a look over this Docker compose file...
+```bash
+cat docker-compose-network-self-contained.yml
+```
+
+```yaml
+version: '2'
+
+networks:
+  ros_test_bridge_network:
+    driver: bridge
+
+services:
+  rosmaster:
+    image: ros:noetic-robot
+    environment:
+      - "ROS_HOSTNAME=rosmaster"
+    command: stdbuf -o L roscore
+    networks:
+      - ros_test_bridge_network
+    restart: always
+
+  publisher:
+    image: ros:noetic-robot
+    depends_on:
+      - rosmaster
+    environment:
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+      - "ROS_HOSTNAME=publisher"
+    command: stdbuf -o L rostopic pub /chatter std_msgs/String "Hello World!" -r 2
+    networks:
+      - ros_test_bridge_network
+    restart: always
+
+  subscriber:
+    image: ros:noetic-robot
+    depends_on:
+      - rosmaster
+      - publisher
+    environment:
+      - "ROS_HOSTNAME=subscriber"
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+    command: stdbuf -o L rostopic echo /chatter
+    networks:
+      - ros_test_bridge_network
+    restart: always
+```
+
+You can see we are starting a bridge network and three services, rosmaster, publisher and subscriber. Each service is created using the offical ROS Noetic base Docker image. We can specify dependencies between containers. Note that we set our ROS network environment varibales as detailed in the [ROS network setup guide](https://wiki.ros.org/ROS/NetworkSetup). Each service is spawned connected to a specified Docker network.
+
+### Exposed Network - Docker *"host"* Network
+Navigate to the Docker compose files...
+```bash
+cd docker_ros/docker
+```
+
+Create the Docker network and launch the containers...
+```bash
+docker compose -f docker-compose-network-host.yml up --remove-orphans
+```
+
+Similar to the previous example you ought to see the "Hello World!" output from the subscriber-1 container.
+```
+[+] Running 3/0
+ ✔ Container docker-rosmaster-1   Created                                                                                                                                                                0.0s 
+ ✔ Container docker-publisher-1   Created                                                                                                                                                                0.0s 
+ ✔ Container docker-subscriber-1  Created                                                                                                                                                                0.0s 
+Attaching to publisher-1, rosmaster-1, subscriber-1
+publisher-1   | ERROR: Unable to communicate with master!
+subscriber-1  | ERROR: Unable to communicate with master!
+publisher-1 exited with code 1
+subscriber-1 exited with code 1
+subscriber-1  | data: "Hello World!"
+subscriber-1  | ---
+subscriber-1  | data: "Hello World!"
+subscriber-1  | ---
+subscriber-1  | data: "Hello World!"
+```
+
+However, this time if you open another terminal and run some basic commands looking for a ROS master...
+```bash
+rostopic list
+```
+
+We now get interaction as if we were running the nodes natively on our host system...
+```
+/chatter
+/rosout
+/rosout_agg
+```
+
+We can echo the `/chatter` topic..
+```bash
+rostopic echo /chatter
+```
+
+...and publish to it
+```bash
+rostopic pub -r 2 /chatter std_msgs/String "Hello from your host system!"
+```
+
+...which you can confirm by switching back to the terminal where the Docker compose is running...
+```
+subscriber-1  | data: "Hello World!"
+subscriber-1  | ---
+subscriber-1  | data: "Hello from your host system!"
+subscriber-1  | ---
+subscriber-1  | data: "Hello World!"
+subscriber-1  | ---
+subscriber-1  | data: "Hello from your host system!"
+```
+
+You should take a look at the Docker compose file again to see what's changed here to enable this.
+```bash
+cat docker-compose-network-host.yml
+```
+
+A big change here is that we are using an external .env file to specify our environment variables.
+```bash
+cat .env
+```
+
 
 
 

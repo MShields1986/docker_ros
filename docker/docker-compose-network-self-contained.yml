@@ -14,25 +14,25 @@ services:
       - ros_test_bridge_network
     restart: always
 
-  talker:
+  publisher:
     image: ros:noetic-robot
     depends_on:
       - rosmaster
     environment:
       - "ROS_MASTER_URI=http://rosmaster:11311"
-      - "ROS_HOSTNAME=talker"
+      - "ROS_HOSTNAME=publisher"
     command: stdbuf -o L rostopic pub /chatter std_msgs/String "Hello World!" -r 2
     networks:
       - ros_test_bridge_network
     restart: always
 
-  listener:
+  subscriber:
     image: ros:noetic-robot
     depends_on:
       - rosmaster
-      - talker
+      - publisher
     environment:
-      - "ROS_HOSTNAME=listener"
+      - "ROS_HOSTNAME=subscriber"
       - "ROS_MASTER_URI=http://rosmaster:11311"
     command: stdbuf -o L rostopic echo /chatter
     networks:

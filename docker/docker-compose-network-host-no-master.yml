@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  talker:
+  publisher:
     image: ros:noetic-robot
     environment:
       - 'ROS_MASTER_URI=${ROS_MASTER_URI}'
@@ -13,10 +13,10 @@ services:
       #- "ETC_HOSTNAME_1:ETC_HOST_IP_1"
     restart: always
 
-  listener:
+  subscriber:
     image: ros:noetic-robot
     depends_on:
-      - talker
+      - publisher
     environment:
       - 'ROS_MASTER_URI=${ROS_MASTER_URI}'
       - 'ROS_HOSTNAME=${ROS_HOSTNAME}'
