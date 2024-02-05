@@ -3,26 +3,28 @@ version: '3.9'
 services:
   publisher:
     image: ros:noetic-robot
+    command: stdbuf -o L rostopic pub /chatter std_msgs/String "Hello World!" -r 2
     environment:
       - 'ROS_MASTER_URI=${ROS_MASTER_URI}'
       - 'ROS_HOSTNAME=${ROS_HOSTNAME}'
       #- 'ROS_IP=${ROS_IP}'
-    command: stdbuf -o L rostopic pub /chatter std_msgs/String "Hello World!" -r 2
     network_mode: host
     #extra_hosts:
       #- "ETC_HOSTNAME_1:ETC_HOST_IP_1"
-    restart: always
+    #restart: always
+    restart: unless-stopped
 
   subscriber:
     image: ros:noetic-robot
+    command: stdbuf -o L rostopic echo /chatter
     depends_on:
       - publisher
     environment:
       - 'ROS_MASTER_URI=${ROS_MASTER_URI}'
       - 'ROS_HOSTNAME=${ROS_HOSTNAME}'
       #- 'ROS_IP=${ROS_IP}'
-    command: stdbuf -o L rostopic echo /chatter
     network_mode: host
     #extra_hosts:
       #- "ETC_HOSTNAME_1:ETC_HOST_IP_1"
-    restart: always
+    #restart: always
+    restart: unless-stopped

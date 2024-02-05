@@ -7,34 +7,34 @@ networks:
 services:
   rosmaster:
     image: ros:noetic-robot
+    command: stdbuf -o L roscore
     environment:
       - "ROS_HOSTNAME=rosmaster"
-    command: stdbuf -o L roscore
     networks:
       - ros_test_bridge_network
-    restart: always
+    restart: unless-stopped
 
   publisher:
     image: ros:noetic-robot
+    command: stdbuf -o L rostopic pub /chatter std_msgs/String "Hello World!" -r 2
     depends_on:
       - rosmaster
     environment:
       - "ROS_MASTER_URI=http://rosmaster:11311"
       - "ROS_HOSTNAME=publisher"
-    command: stdbuf -o L rostopic pub /chatter std_msgs/String "Hello World!" -r 2
     networks:
       - ros_test_bridge_network
-    restart: always
+    restart: unless-stopped
 
   subscriber:
     image: ros:noetic-robot
+    command: stdbuf -o L rostopic echo /chatter
     depends_on:
       - rosmaster
       - publisher
     environment:
       - "ROS_HOSTNAME=subscriber"
       - "ROS_MASTER_URI=http://rosmaster:11311"
-    command: stdbuf -o L rostopic echo /chatter
     networks:
       - ros_test_bridge_network
-    restart: always
+    restart: unless-stopped

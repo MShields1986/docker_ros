@@ -276,6 +276,9 @@ cat docker-compose-network-host-no-master.yml
 ### Launching on Boot With systemd
 `TODO`
 
+### Notes on Further Implementations
+If you are using `roslaunch` and want to be sure that your system holds until the ROS master is up on first start up be sure to add the `--wait` option to the `roslaunch` command.
+
 ## Bugs, Issues and Feature Requests
 Please report bugs, issues and request features using the [Issue Tracker](https://github.com/MShields1986/docker_ros/issues).
 
