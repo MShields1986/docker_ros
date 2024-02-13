@@ -288,6 +288,7 @@ Most of what can be found here is derived from the following resources:
 - Ruffin White and Henrik Christensen's [ROS and Docker white paper](https://www.researchgate.net/publication/317751755_ROS_and_Docker)
 - The [Docker documentation](https://docs.docker.com/), especially around networking
 - [This gist](https://gist.github.com/mosquito/b23e1c1e5723a7fd9e6568e5cf91180f) from Mosquito on using Docker compose from systemd
+- [This post](https://tuw-cpsg.github.io/tutorials/docker-ros/)
 
 ## Useful Commands
 When I was trying out Docker for the first time (again...) I ran into multiple issues that were often down to network name conflicts and networks/containers being up when I thought they were down. I found the following commands usefull.
