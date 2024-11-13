@@ -289,6 +289,8 @@ Most of what can be found here is derived from the following resources:
 - The [Docker documentation](https://docs.docker.com/), especially around networking
 - [This gist](https://gist.github.com/mosquito/b23e1c1e5723a7fd9e6568e5cf91180f) from Mosquito on using Docker compose from systemd
 - [This post](https://tuw-cpsg.github.io/tutorials/docker-ros/)
+- [Docker Labs](https://github.com/docker/labs)
+- [Docker and K8s Lab](https://gitlab.com/shapespace_open/catweb)
 
 ## Useful Commands
 When I was trying out Docker for the first time (again...) I ran into multiple issues that were often down to network name conflicts and networks/containers being up when I thought they were down. I found the following commands usefull.
@@ -321,4 +323,29 @@ docker system prune
 Clean up Docker runtime including images, except for anything currently being used...
 ```bash
 docker system prune -a
+```
+
+Remove a container...
+```bash
+docker rm {container}
+```
+
+Remove an image...
+```bash
+docker rmi {image}
+```
+
+Run with a dettached terminal (no debug print out)...
+```bash
+docker run -d
+```
+
+Run with a specific port mapping (container port:host port)...
+```bash
+docker run -p 8080:5000
+```
+
+Interact with running container via the shell...
+```bash
+docker exec -it {container} /bin/bash
 ```
