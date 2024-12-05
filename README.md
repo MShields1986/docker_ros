@@ -9,10 +9,11 @@ This README is a summation of the key notes I picked up from a few other sources
 ### Install and Setup Docker
 Follow the [Docker install guide](https://docs.docker.com/engine/install/ubuntu/).
 
-Allow permission for Docker to run without the sudo command being issued.
+Allow permission for Docker to run without the sudo command being issued and reboot for changes to take effect.
 ```bash
 sudo groupadd docker
 sudo usermod -aG docker $USER
+sudo reboot
 ```
 
 Confirm your setup.
