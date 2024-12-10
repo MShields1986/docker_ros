@@ -16,7 +16,7 @@ services:
     #image: ros:noetic-robot
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/DockerfileCatkinBuild
       target: base
       args:
         - CATKIN_WORKSPACE_DIR=${CATKIN_WORKSPACE_DIR}
@@ -33,4 +33,4 @@ services:
     volumes:
       - ../src:${CATKIN_WORKSPACE_DIR}/src
     command: stdbuf -o L catkin build
-    restart: unless-stopped
+    #restart: unless-stopped
