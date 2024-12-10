@@ -1,18 +1,6 @@
 version: "3.9"
 services:
-  rosmaster:
-    image: ros:noetic-robot
-    command: stdbuf -o L roscore
-    environment:
-      - 'ROS_HOSTNAME=${ROS_HOSTNAME}'
-    network_mode: host
-    #extra_hosts:
-      #- "ETC_HOSTNAME_1:ETC_HOST_IP_1"
-    #restart: always
-    restart: unless-stopped
-
-
-  publisher:
+  peak_ltpa:
     #image: ros:noetic-robot
     build:
       context: ..
@@ -20,8 +8,6 @@ services:
       target: base
       args:
         - CATKIN_WORKSPACE_DIR=${CATKIN_WORKSPACE_DIR}
-    depends_on:
-      - rosmaster
     environment:
       - 'CATKIN_WORKSPACE_DIR=${CATKIN_WORKSPACE_DIR}'
       - 'ROS_MASTER_URI=${ROS_MASTER_URI}'
@@ -30,7 +16,11 @@ services:
     network_mode: host
     #extra_hosts:
       #- "ETC_HOSTNAME_1:ETC_HOST_IP_1"
-    volumes:
-      - ../src:${CATKIN_WORKSPACE_DIR}/src
-    command: stdbuf -o L catkin build
-    #restart: unless-stopped
+    #volumes:
+      #- ../src:${CATKIN_WORKSPACE_DIR}/src
+    #command: stdbuf -o L roslaunch peak_ltpa init.launch
+    #command: stdbuf -o L roslaunch peak_ltpa init.launch
+    #command: bash -c "roslaunch peak_ltpa init.launch"
+    #command: sleep infinity
+    #command: stdbuf -o L "source /catkin_ws/devel/setup.bash && roslaunch peak_ltpa init.launch"
+    restart: unless-stopped
