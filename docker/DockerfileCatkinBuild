@@ -1,0 +1,26 @@
+##############
+# Base image #
+##############
+FROM ros:noetic-robot as base
+
+ARG CATKIN_WORKSPACE_DIR=${CATKIN_WORKSPACE_DIR}
+WORKDIR ${CATKIN_WORKSPACE_DIR}
+
+SHELL ["/bin/bash", "-c"]
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+ && apt-get -y install \
+    git \
+    python3-catkin-tools \
+    python3-osrf-pycommon \
+    ros-noetic-tf2-sensor-msgs \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
+ && echo "source /catkin_ws/devel/setup.bash" >> /root/.bashrc
+
+RUN cd ${CATKIN_WORKSPACE_DIR}
+
+ENV DEBIAN_FRONTEND=dialog
