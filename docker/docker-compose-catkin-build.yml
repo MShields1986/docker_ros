@@ -19,8 +19,7 @@ services:
     #volumes:
       #- ../src:${CATKIN_WORKSPACE_DIR}/src
     #command: stdbuf -o L roslaunch peak_ltpa init.launch
-    #command: stdbuf -o L roslaunch peak_ltpa init.launch
-    #command: bash -c "roslaunch peak_ltpa init.launch"
+    command: /bin/bash -c "roslaunch peak_ltpa init.launch"
     #command: sleep infinity
     #command: stdbuf -o L "source /catkin_ws/devel/setup.bash && roslaunch peak_ltpa init.launch"
     restart: unless-stopped

@@ -26,14 +26,14 @@ WORKDIR ${CATKIN_WORKSPACE_DIR}
 
 RUN source /opt/ros/noetic/setup.bash \
  && catkin build \
- && echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
- && echo "source /catkin_ws/devel/setup.bash" >> /root/.bashrc \
- && echo "source /catkin_ws/devel/setup.bash" >> /ros_entrypoint.sh
+ && echo 'source /opt/ros/noetic/setup.bash' >> /root/.bashrc \
+ && echo 'source /catkin_ws/devel/setup.bash' >> /root/.bashrc \
+ && echo 'source /catkin_ws/devel/setup.bash' >> /ros_entrypoint.sh
 
-RUN catkin build
+# Move 'exec "$@"' to after sourcing the workspace
+RUN sed -i '/exec "$@"/d' /ros_entrypoint.sh \
+ && echo 'exec "$@"' >> /ros_entrypoint.sh
 
-# TODO: Find a way to get the CMD into the docker-compose yaml file
-CMD source /catkin_ws/devel/setup.bash \
- && roslaunch peak_ltpa init.launch
+ENTRYPOINT [ "/ros_entrypoint.sh" ]
 
 ENV DEBIAN_FRONTEND=dialog
